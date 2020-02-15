@@ -15,7 +15,7 @@ export const state = () => {
 export const mutations = {
     // 函数名自定义,
     // 第一个参数必须是state, 第二个参数调用时候传入的参数
-    setUserInfo(state, data){
+    setUserInfo({userInfo}, data){
         state.userInfo = data;
     }
 }
@@ -34,7 +34,11 @@ export const actions = {
             data
         }).then(res => {
             // data是要保存到userInfo
+            console.log(res)
+            console.log(res.data)
+
             const {data} = res;
+            //console.log(res.data)
             // 调用commit保存数据到state
             store.commit('setUserInfo', data);
         })
