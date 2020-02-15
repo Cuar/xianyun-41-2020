@@ -46,8 +46,6 @@
                 </el-row>
             </div>
         </div>
-        <input @input='a'  type="text" v-model="bb">
-        {{bb}}
     </div>
 </template>
 
@@ -55,7 +53,6 @@
 export default {
     data(){
         return {
-            bb:'',
           // 轮播图数据
           banners: [],
           //tab栏数据
@@ -101,9 +98,6 @@ export default {
             
             // 修改current
             this.current = index;
-        },
-        a(){
-            console.log(123)
         }
     }
 }
