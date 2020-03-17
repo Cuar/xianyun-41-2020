@@ -85,7 +85,6 @@
                 <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
             </div>
         </div>
-        <span>{{allPrice}}</span>
     </div>
 </template>
 
@@ -114,33 +113,6 @@ export default {
             infoData: {}
         }
     },
-    computed: {
-        // 总价格，展示在侧边栏组件
-        allPrice(){
-            // 先判断infoData是否有数据
-            if(!this.infoData.seat_infos){
-                return;
-            }
-
-            let price = 0;
-            // 单价
-            price += this.infoData.seat_infos.org_settle_price;
-            // 基建燃油费
-            price += this.infoData.airport_tax_audlet;
-            // 保险
-            this.infoData.insurances.forEach(v => {
-                // 如果选中的id数组包含了当前的保险id，需要加上保险的价格 
-                if(this.form.insurances.indexOf(v.id) > -1){
-                    price += v.price;
-                }
-            });
-            // 人数的数量
-            price *= this.form.users.length;
-            // 把总价保存到store
-            this.$store.commit("air/setAllPrice", price)
-            return '';
-        }
-    },
     mounted(){
         // 请求机票详细信息（保险还有右侧栏需要的数据）
         const {id, seat_xid} = this.$route.query;
@@ -152,9 +124,6 @@ export default {
         }).then(res => {
             // 赋值给机票的详细信息
             this.infoData = res.data;
-
-            // 把infoData保存到store
-            this.$store.commit("air/setOrderDetail", this.infoData)
         })
     },
     methods: {
@@ -269,27 +238,7 @@ export default {
             if(!valid) return;
 
             // 调用提交订单的接口
-            this.$axios({
-                url: "/airorders",
-                method: "POST",
-                data: this.form,
-                headers: {
-                    // 必须要做token前面加上`Bearer `字符串，后面有一个空格的
-                    Authorization: `Bearer ` + this.$store.state.user.userInfo.token
-                }
-            }).then(res => {
-                this.$message.success("订单提交成功");
-
-                // 跳转到付款页
-                setTimeout(() => {
-                    this.$router.push({
-                        path: "/air/pay",
-                        query: {
-                            id: res.data.data.id // 订单id
-                        }
-                    }) 
-                }, 1500);     
-            })
+            // console.log(this.form.insurances)
         }
     }
 }
